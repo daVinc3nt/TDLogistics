@@ -6,5 +6,5 @@ const router = express.Router();
 router.post("/check", ordersController.checkExistOrder);
 router.get("/", ordersController.getAllOrders);
 router.get("/search", ordersController.getOrder);
-
+router.delete("/cancel",ordersController.cancelOrder);
 module.exports = router;
