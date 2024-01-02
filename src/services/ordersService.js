@@ -11,25 +11,19 @@ const getAllOrders = async () => {
 const getOrder = async (fields, values) => {
     return await Orders.getOrder(fields, values);
 };
-const cancelOrder=async (phoneNumber)=>
+const cancelOrder=async (values)=>
 {
-    await Users.cancelOrder(phoneNumber);
+    await Users.cancelOrder(values);
 };
 
-const getTime = async (phoneNumber)=>
+const getTimeOrder = async (values)=>
 {
-    return await Users.getTime(phoneNumber);
-};
-
-const checkExistOrder= async(phoneNumber)=>
-{
-    return await Users.checkExistOrder(phoneNumber);
+    return await Users.getTime(values);
 };
 module.exports = {
     checkExistOrder,
     getAllOrders,
     getOrder,
     cancelOrder,
-    getTime,
-    checkExistOrder,
+    getTimeOrder,
 };
