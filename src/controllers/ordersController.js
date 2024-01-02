@@ -90,44 +90,63 @@ const cancelOrder = async (req, res) => {
       message: "Vui lòng đăng nhập.",
     });
   }
-    
- 
 
-   const existOrder=usersService.checkExistOrder(phoneNumber);
-   if (!existOrder) {
-    return res.sendStatus(204).json({
-       error: true,
-       message: "Đơn hàng không tồn tại.",
-     });
-   }
+  const keys = new Array();
+  const values = new Array();
 
-   const currentTime=new Date();
-   const orderTime= usersService.getTime(phoneNumber);
-   const differenceTime=currentTime-orderTime;
-   const limitTime=Math.floor(differenceTime/60*1000);
+  for (const key in req.query) {
+    if ( req.query.hasOwnProperty(key) &&
+      req.query[key] !== null &&
+      req.query[key] !== undefined &&
+      req.query !== "") 
+    {
+      keys.push(key);
+      values.push(req.query[key]);
+    }
+  }
 
-   if (limitTime > 30)
-   {
-    return res.sendStatus(204).json({
+  if (keys.length < 0) {
+    return res.status(400).json({
       error: true,
-      message: "Bạn không được phép thay đổi.",
+      message: "Vui lòng chọn đơn hàng!",
     });
-   }
+  }
 
-  try {
-    await usersService.cancelOrder(phoneNumber);
-    res.status(200).json({
-      error: false,
-      message: "Hủy đơn hàng thành công.",
-    });
+  try 
+  {
+    const currentTime = new Date();
 
-  } catch (error) {
+    for (const val in values) 
+    {
+      const orderTime = usersService.getTimeOrder(val);
+      const differenceTime = currentTime - orderTime;
+      const limitTime = Math.floor((differenceTime / 60) * 1000);
+      if (limitTime > 30) 
+      {
+        res.sendStatus(204).json({
+          error: true,
+          message: `Bạn không được phép thay đổi, ${val}`,
+        });
+      } 
+
+      else 
+      {
+        await usersService.cancelOrder(val);
+        res.status(200).json({
+          error: false,
+          message: "Hủy đơn hàng thành công.",
+        });
+      }
+    }
+  } 
+  catch (error) {
     res.status(500).json({
       status: "error",
       message: "Đã xảy ra lỗi. Vui lòng thử lại.",
     });
   }
 };
+
 
 module.exports = {
     checkExistOrder,
