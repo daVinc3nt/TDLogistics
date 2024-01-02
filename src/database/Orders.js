@@ -11,6 +11,7 @@ const dbOptions = {
 
 const table = "orders";
 const sessionTable = "sessions";
+const orderTable="orders";
 
 const pool = mysql.createPool(dbOptions).promise();
 
