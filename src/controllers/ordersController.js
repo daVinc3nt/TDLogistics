@@ -91,23 +91,7 @@ const cancelOrder = async (req, res) => {
     });
   }
     
-  const sessionId = req.cookies["connect.sid"];
-  const existed = usersService.checkExistSession(sessionId);
-  if (!existed) {
-   return res.sendStatus(204).json({
-      error: true,
-      message: "Vui lòng đăng nhập.",
-    });
-  }
-
-  const phoneNumber=req.user.phone_number;
-  const existUser = usersService.checkExistUser(phoneNumber);
-  if (!existUser) {
-    return res.sendStatus(204).json({
-       error: true,
-       message: "Người dùng không tồn tại.",
-     });
-   }
+ 
 
    const existOrder=usersService.checkExistOrder(phoneNumber);
    if (!existOrder) {
