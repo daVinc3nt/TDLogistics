@@ -83,9 +83,71 @@ const getOrder = async (req, res) => {
     }
 
 }
+const cancelOrder = async (req, res) => {
+  if (!req.isAuthenticated() || req.user.permission < 1) {
+    return res.status(401).json({
+      error: true,
+      message: "Vui lòng đăng nhập.",
+    });
+  }
+    
+  const sessionId = req.cookies["connect.sid"];
+  const existed = usersService.checkExistSession(sessionId);
+  if (!existed) {
+   return res.sendStatus(204).json({
+      error: true,
+      message: "Vui lòng đăng nhập.",
+    });
+  }
+
+  const phoneNumber=req.user.phone_number;
+  const existUser = usersService.checkExistUser(phoneNumber);
+  if (!existUser) {
+    return res.sendStatus(204).json({
+       error: true,
+       message: "Người dùng không tồn tại.",
+     });
+   }
+
+   const existOrder=usersService.checkExistOrder(phoneNumber);
+   if (!existOrder) {
+    return res.sendStatus(204).json({
+       error: true,
+       message: "Đơn hàng không tồn tại.",
+     });
+   }
+
+   const currentTime=new Date();
+   const orderTime= usersService.getTime(phoneNumber);
+   const differenceTime=currentTime-orderTime;
+   const limitTime=Math.floor(differenceTime/60*1000);
+
+   if (limitTime > 30)
+   {
+    return res.sendStatus(204).json({
+      error: true,
+      message: "Bạn không được phép thay đổi.",
+    });
+   }
+
+  try {
+    await usersService.cancelOrder(phoneNumber);
+    res.status(200).json({
+      error: false,
+      message: "Hủy đơn hàng thành công.",
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      message: "Đã xảy ra lỗi. Vui lòng thử lại.",
+    });
+  }
+};
 
 module.exports = {
     checkExistOrder,
     getAllOrders,
     getOrder,
+    cancelOrder,
 }
