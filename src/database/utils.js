@@ -74,6 +74,19 @@ const getLastRow = async (pool, table) => {
         throw "Đã xảy ra lỗi. Vui lòng thử lại sau ít phút!";
     }
 }
+const cancel=async (pool, table, fields, values)=>
+{
+    const query = `Delete FROM ${table} WHERE ${fields.map(field => `${field} = ?`)} `;
+
+    try {
+        const result = await pool.query(query, values);
+        console.log("Success!");
+    } 
+    catch (error) {
+        console.log("Error: ", error);
+        throw "Đã xảy ra lỗi. Vui lòng thử lại sau ít phút!";
+    }
+}
 
 module.exports = {
     findOne,
@@ -81,4 +94,5 @@ module.exports = {
     insert,
     update,
     getLastRow,
+    cancel,
 }
