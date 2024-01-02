@@ -76,7 +76,7 @@ const getLastRow = async (pool, table) => {
 }
 const cancel=async (pool, table, fields, values)=>
 {
-    const query = `Delete FROM ${table} WHERE ${fields.map(field => `${field} = ?`)} `;
+    const query = `DELETE FROM ${table} WHERE ${fields.map(field => `${field} = ?`)} `;
 
     try {
         const result = await pool.query(query, values);
