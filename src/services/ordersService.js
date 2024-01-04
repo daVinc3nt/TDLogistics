@@ -8,17 +8,19 @@ const getAllOrders = async () => {
     return await Orders.getAllOrders();
 };
 
-const getOrder = async (fields, values) => {
-    return await Orders.getOrder(fields, values);
-};
-const cancelOrder=async (values)=>
+const cancelOrder=async (orderId)=>
 {
-    await Users.cancelOrder(values);
+    await Orders.cancelOrder(orderId);
 };
 
-const getTimeOrder = async (values)=>
+const getTimeOrder = async (orderId)=>
 {
-    return await Users.getTime(values);
+    return await Orders.getTime(orderId);
+};
+
+
+const orderMatchUser = async (order_id, user_id)=>{
+    return Orders.orderMatchUser(order_id, user_id);
 };
 module.exports = {
     checkExistOrder,
@@ -26,4 +28,5 @@ module.exports = {
     getOrder,
     cancelOrder,
     getTimeOrder,
+    orderMatchUser
 };
