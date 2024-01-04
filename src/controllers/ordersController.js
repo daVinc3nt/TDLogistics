@@ -50,21 +50,21 @@ const getOrder = async (req, res) => {
         });
     }
 
+    const ordersRequestValidation = new utils.CustomerUserRequestValidation(req.body);
+    const { error } = ordersRequestValidation.validateFindingOrder();
+    if(error) {
+        return res.status(400).json({
+            error: true,
+            message: "Thông tin không hợp lệ!",
+        });
+    }
+
     const keys = new Array();
     const values = new Array();
 
-    for(const key in req.query) {
-        if(req.query.hasOwnProperty(key) && req.query[key] !== null && req.query[key] !== undefined && req.query !== "") {
-            keys.push(key);
-            values.push(req.query[key]);
-        }
-    }
-
-    if(keys.length < 0) {
-        return res.status(400).json({
-            error: true,
-            message: "Vui lòng không để trống tất cả thông tin!",
-        });
+    for (const key in req.body) {
+        keys.push(key);
+        values.push(req.body[key]);
     }
 
     try {
@@ -81,6 +81,7 @@ const getOrder = async (req, res) => {
             message: error,
         });
     }
+
 }
 
 const createNewOrder = async (req, res) => {

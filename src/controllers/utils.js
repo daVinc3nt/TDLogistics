@@ -2,8 +2,6 @@ const crypto = require("crypto");
 const Joi = require("joi");
 require("dotenv").config();
 
-const Joi = require("joi");
-require("dotenv").config();
 
 
 const hashPhoneNumber = async (phoneNumber) => {
@@ -36,7 +34,7 @@ class CustomerUserRequestValidation {
             miss: Joi.number().min(0).max(3),
         });
         
-        return schema.validate(data);
+        return schema.validate(this._data);
     }
     
     validateFindingOrder = () => {
@@ -62,7 +60,7 @@ class CustomerUserRequestValidation {
             miss: Joi.number().min(0).max(3),
         });
         
-        return schema.validate(data);
+        return schema.validate(this._data);
     }
     
     validateUpdatingOrder = () => {
@@ -80,7 +78,7 @@ class CustomerUserRequestValidation {
             COD: Joi.number().precision(3).min(0),
         });
     
-        return schema.validate(data);
+        return schema.validate(this._data);
     }
     
     validateCancelingOrder = () => {
@@ -88,7 +86,7 @@ class CustomerUserRequestValidation {
             order_id: Joi.string().alphanum().min(5).max(15).required()
         });
     
-        return schema.validate(data);
+        return schema.validate(this._data);
     }
 }
 
