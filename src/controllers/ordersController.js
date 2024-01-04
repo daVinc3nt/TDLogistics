@@ -86,8 +86,6 @@ const getOrder = async (req, res) => {
 }
 const cancelOrder = async (req, res) => 
 {
-  const currentTime=new Date();
-
   if (!req.isAuthenticated() || req.user.permission < 1) {
     return res.status(401).json({
       error: true,
@@ -111,65 +109,46 @@ const cancelOrder = async (req, res) =>
       message: "Thông tin không hợp lệ",
     });
   }
-
-
-  const values = new Array();
-  const checkExistOrder = ordersService.checkExistOrder(req.body.order_id);
-
-  if (!checkExistOrder) {
-    return res.status(204).json({
-      error: true,
-      message: "Đơn hàng không tồn tại.",
-    });
-  }
-
+  let values;
   if (req.user.permission === 1) {
     // user
-    const matchOrder = ordersService.orderMatchUser(req.body.order_id, req.user.user_id);
-    if (!matchOrder) {
-      return res.status(401).json({
-        error: true,
-        message: "Bạn không có quyền truy cập tài nguyên này.",
-      });
-    }
-
-    const expireTime = utils.checkTimeExpire(currentTime, req.body.order_id);
-    if (!expireTime) {
-      return res.status(204).json({
-        error: true,
-        message: `Đơn hàng ${req.body.order_id} không được phép thay đổi`,
-      });
-    }
-
-    values.push(req.body.order_id);
+     values=[req.user.user_id , req.body.order_id];
   } 
   
   else if (req.user.permission === 2)
    {
     // admin
-    values.push(req.body.order_id);
+     values=[req.body.order_id];
   } 
-  
-  else {
+
+  else 
+  {
     return res.status(401).json({
       error: true,
       message: "Bạn không có quyền truy cập tài nguyên này.",
     });
   }
 
-  if (values.length < 0) {
-    return res.status(400).json({
-      error: true,
-      message: "Không có đơn hàng được chọn!",
+
+  try {
+    
+  const checkCancelOder = await ordersService.cancelOrder(values , req.user.permission);
+  if (checkCancelOder > 0)
+  {
+    res.status(200).json({
+      error: false,
+      message: ` Hủy đơn hàng ${req.body.order_id} thành công . `,
     });
   }
 
-  try {
-    await ordersService.cancelOrder(values[0]);
-    res.status(200).json({
-      error: false,
-      message: ` Hủy đơn hàng ${values[0]} thành công . `,
-    });
+  else
+    {
+      res.status(200).json({
+        error: true,
+        message: ` Hủy đơn hàng ${req.body.order_id} thất bại. Vui lòng kiểm tra lại! `,
+      });
+    }
+
   } catch (error) {
     res.status(500).json({
       status: "error",
