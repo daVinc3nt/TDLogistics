@@ -44,25 +44,11 @@ const cancelOrder=async(values, permission)=>{
 };
 
 
-const getTimeOrder=async(orderId)=>
-{
-  const order =await utils.findOne(pool, orderTable, ["order_id"], [orderId]);
-  const orderTime=order["order_time"];
-  return new Date(orderTime.replace(' ', 'T'));
-}
-
-const orderMatchUser= async (order_id, user_id) =>
-{
-  const result = await utils.find(pool, table, ["order_id","user_id"], [order_id , user_id]);
-  return result.length > 0;
-}
 
 
 module.exports = {
     checkExitOrder,
     getAllOrders,
     getOrder,
-    cancelOrder,
-    getTimeOrder,
-    orderMatchUser,
+    cancelOrder
 };
