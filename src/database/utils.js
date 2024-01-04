@@ -1,3 +1,5 @@
+const { table } = require("console");
+
 const findOne = async (pool, table, fields, values) => {
     const query = `SELECT * FROM ${table} WHERE ${fields.map(field => `${field} = ?`)} LIMIT 1`;
 
@@ -76,10 +78,11 @@ const getLastRow = async (pool, table) => {
     }
 }
 
+
 module.exports = {
     findOne,
     find,
     insert,
     update,
-    getLastRow,
+    getLastRow, 
 }

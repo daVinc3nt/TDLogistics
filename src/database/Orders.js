@@ -31,6 +31,8 @@ const createNewOrder = async (fields, values) => {
     return await utils.insert(pool, table, fields, values);
 }
 
+
+
 module.exports = {
     checkExitOrder,
     getAllOrders,

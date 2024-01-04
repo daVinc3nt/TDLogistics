@@ -84,3 +84,11 @@ content-type: application/json
 
 GET http://localhost:5000/destroy_session
 content-type: application/json
+
+###
+
+GET http://localhost:5000/api/v1/orders/search
+
+{
+    "user_id": "fed890"
+}
