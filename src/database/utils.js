@@ -12,24 +12,26 @@ const findOne = async (pool, table, fields, values) => {
 }
 
 const find = async (pool, table, fields = null, values = null) => {
-    let query;
+  let query;
 
-    if (fields !== null && values !== null) {
-        query = `SELECT * FROM ${table} WHERE ${fields.map(field => `${field} = ?`)}`;
-    }
-    else {
-        query = `SELECT * FROM ${table}`;
-    }
+  if (fields !== null && values !== null) {
+    const conditions =  fields.map(field => `${field} = ? `).join(' AND ');
+    query = `SELECT * FROM ${table} WHERE ${conditions}`;
+  }
+  else {
+      query = `SELECT * FROM ${table}`;
+  }
 
-    try {
-        const result = await pool.query(query, values);
-        console.log("Success!");
-        return result[0];
-    } catch (error) {
-        console.log("Error: ", error);
-        throw "Đã xảy ra lỗi. Vui lòng thử lại sau ít phút!";
-    }
+  try {
+      const result = await pool.query(query, values);
+      console.log("Success!");
+      return result[0];
+  } catch (error) {
+      console.log("Error: ", error);
+      throw "Đã xảy ra lỗi. Vui lòng thử lại sau ít phút!";
+  }
 }
+
 
 const insert = async (pool, table, fields, values) => {
     const query = `INSERT INTO ${table} (${fields.map(field => `${field}`)}) VALUES (${fields.map(field => `?`)})`;
