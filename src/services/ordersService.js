@@ -8,25 +8,18 @@ const getAllOrders = async () => {
     return await Orders.getAllOrders();
 };
 
-const cancelOrder=async (orderId)=>
+const cancelOrder=async (values, permission)=>
 {
-    await Orders.cancelOrder(orderId);
-};
-
-const getTimeOrder = async (orderId)=>
-{
-    return await Orders.getTime(orderId);
+    await Orders.cancelOrder(values, permission);
 };
 
 
-const orderMatchUser = async (order_id, user_id)=>{
-    return Orders.orderMatchUser(order_id, user_id);
-};
+
+
+
 module.exports = {
     checkExistOrder,
     getAllOrders,
     getOrder,
-    cancelOrder,
-    getTimeOrder,
-    orderMatchUser
+    cancelOrder
 };
