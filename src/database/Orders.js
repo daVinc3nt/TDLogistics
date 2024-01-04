@@ -28,17 +28,24 @@ const getOrder = async (fields, values) => {
     return await utils.find(pool, table, fields, values);
 };
 
-const cancelOrder=async(values)=>{
-    await utils.cancel(pool, orderTable, ["order_id"], [values]);
+const cancelOrder=async(orderId)=>{
+  await utils.cancel(pool, orderTable, ["order_id"], [orderId]);
 };
 
 
-const getTimeOrder=async(values)=>
+const getTimeOrder=async(orderId)=>
 {
-    const order =await utils.findOne(pool, orderTable, ["order_id"], [values]);
-    const orderTime=order["order_time"];
-    return new Date(orderTime.replace(' ', 'T'));
+  const order =await utils.findOne(pool, orderTable, ["order_id"], [orderId]);
+  const orderTime=order["order_time"];
+  return new Date(orderTime.replace(' ', 'T'));
 }
+
+const orderMatchUser= async (order_id, user_id) =>
+{
+  const result = await utils.find(pool, table, ["order_id","user_id"], [order_id , user_id]);
+  return result.length > 0;
+}
+
 
 module.exports = {
     checkExitOrder,
@@ -46,4 +53,5 @@ module.exports = {
     getOrder,
     cancelOrder,
     getTimeOrder,
+    orderMatchUser,
 };
