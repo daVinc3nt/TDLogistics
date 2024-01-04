@@ -109,7 +109,7 @@ const cancel = async  (pool, table, fields = null, values = null) => {
           query = `DELETE FROM ${table} WHERE ${conditions}`;
         }
         else {
-            query = `SELECT FROM ${table}`;
+            query = `DELETE FROM ${table}`;
         }
       
         try {
