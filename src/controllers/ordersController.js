@@ -83,7 +83,10 @@ const getOrder = async (req, res) => {
     }
 
 }
-const cancelOrder = async (req, res) => {
+const cancelOrder = async (req, res) => 
+{
+  const currentTime=new Date();
+
   if (!req.isAuthenticated() || req.user.permission < 1) {
     return res.status(401).json({
       error: true,
@@ -91,61 +94,89 @@ const cancelOrder = async (req, res) => {
     });
   }
 
-  const keys = new Array();
-  const values = new Array();
-
-  for (const key in req.query) {
-    if ( req.query.hasOwnProperty(key) &&
-      req.query[key] !== null &&
-      req.query[key] !== undefined &&
-      req.query !== "") 
-    {
-      keys.push(key);
-      values.push(req.query[key]);
-    }
-  }
-
-  if (keys.length < 0) {
-    return res.status(400).json({
+  if (req.body.order_id === undefined) {
+    return res.status(401).json({
       error: true,
-      message: "Vui lòng chọn đơn hàng!",
+      message: "Lỗi truy cập !",
     });
   }
 
-  try 
-  {
-    const currentTime = new Date();
+  const userRequestValidation = new utils.CustomerUserRequestValidation(req.body);
 
-    for (const val in values) 
-    {
-      const orderTime = usersService.getTimeOrder(val);
-      const differenceTime = currentTime - orderTime;
-      const limitTime = Math.floor((differenceTime / 60) * 1000);
-      if (limitTime > 30) 
-      {
-        res.sendStatus(204).json({
-          error: true,
-          message: `Bạn không được phép thay đổi, ${val}`,
-        });
-      } 
+  const { error } = userRequestValidation.validateCancelingOrder();
+  if (error) {
+    return res.status(400).json({
+      error: true,
+      message: "Thông tin không hợp lệ",
+    });
+  }
 
-      else 
-      {
-        await usersService.cancelOrder(val);
-        res.status(200).json({
-          error: false,
-          message: "Hủy đơn hàng thành công.",
-        });
-      }
+
+  const values = new Array();
+  const checkExistOrder = ordersService.checkExistOrder(req.body.order_id);
+
+  if (!checkExistOrder) {
+    return res.status(204).json({
+      error: true,
+      message: "Đơn hàng không tồn tại.",
+    });
+  }
+
+  if (req.user.permission === 1) {
+    // user
+    const matchOrder = ordersService.orderMatchUser(req.body.order_id, req.user.user_id);
+    if (!matchOrder) {
+      return res.status(401).json({
+        error: true,
+        message: "Bạn không có quyền truy cập tài nguyên này.",
+      });
     }
+
+    const expireTime = utils.checkTimeExpire(currentTime, req.body.order_id);
+    if (!expireTime) {
+      return res.status(204).json({
+        error: true,
+        message: `Đơn hàng ${req.body.order_id} không được phép thay đổi`,
+      });
+    }
+
+    values.push(req.body.order_id);
   } 
-  catch (error) {
+  
+  else if (req.user.permission === 2)
+   {
+    // admin
+    values.push(req.body.order_id);
+  } 
+  
+  else {
+    return res.status(401).json({
+      error: true,
+      message: "Bạn không có quyền truy cập tài nguyên này.",
+    });
+  }
+
+  if (values.length < 0) {
+    return res.status(400).json({
+      error: true,
+      message: "Không có đơn hàng được chọn!",
+    });
+  }
+
+  try {
+    await ordersService.cancelOrder(values[0]);
+    res.status(200).json({
+      error: false,
+      message: ` Hủy đơn hàng ${values[0]} thành công . `,
+    });
+  } catch (error) {
     res.status(500).json({
       status: "error",
       message: "Đã xảy ra lỗi. Vui lòng thử lại.",
     });
   }
 };
+
 
 
 module.exports = {
