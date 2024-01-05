@@ -33,7 +33,7 @@ const cancelOrder=async(values)=>{
       const formattedTime = currentTime.toISOString().slice(0, 19).replace('T', ' ');
       const timeCondition = `order_time < = ${formattedTime}`; 
 
-     return await utils.cancelOne(pool, table, ["user_id","order_id"], values, timeCondition);
+     return await utils.cancelOne(pool, table, ["user_id","order_id","status"], values, timeCondition);
 };
 
 
