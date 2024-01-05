@@ -44,7 +44,7 @@ const checkExistOrder = async (req, res) => {
 
 const getOrder = async (req, res) => {
     //const permission = req.user.permission;
-    const permission = 1;
+    const permission = 2;
     // if(!req.isAuthenticated() || permission < 1) {
     //     return res.status(401).json({
     //         error: true,
@@ -74,19 +74,11 @@ const getOrder = async (req, res) => {
         if(keys.length === 0) {
             try {
                 const orders = await ordersService.getAllOrders();
-                if(orders.length === 0) {
-                    return res.json({
-                        error: true,
-                        message: "Không có thông tin đơn hàng",
-                    });
-                }
-                else {
-                    return res.json({
-                        error: false,
-                        data: orders,
-                        message: "Lấy thông tin tất cả đơn hàng thành công!",
-                    });
-                }   
+                return res.status(200).json({
+                    error: false,
+                    data: orders,
+                    message: "Lấy thông tin tất cả đơn hàng thành công!",
+                });  
             } catch (error) {
                 console.log("Error: ", error);
                 return res.status(500).json({
@@ -98,19 +90,11 @@ const getOrder = async (req, res) => {
         else {
             try {
                 const orders = await ordersService.getOrder(keys, values);
-                if(orders.length === 0) {
-                    return res.json({
-                        error: true,
-                        message: "Không có thông tin đơn hàng",
-                    });
-                }
-                else {
-                    return res.json({
-                        error: false,
-                        data: orders,
-                        message: "Lấy thông tin tất cả đơn hàng thành công!",
-                    });
-                } 
+                return res.status(200).json({
+                    error: false,
+                    data: orders,
+                    message: "Lấy thông tin tất cả đơn hàng thành công!",
+                });
                 
             } catch (error) {
                 return res.status(500).json({
@@ -141,19 +125,11 @@ const getOrder = async (req, res) => {
 
         try {
             const orders = await ordersService.getOrder(keys, values);
-            if(orders.length === 0) {
-                return res.json({
-                    error: true,
-                    message: "Không có thông tin đơn hàng",
-                });
-            }
-            else {
-                return res.json({
-                    error: false,
-                    data: orders,
-                    message: "Lấy thông tin tất cả đơn hàng thành công!",
-                });
-            }  
+            return res.status(200).json({
+                error: false,
+                data: orders,
+                message: "Lấy thông tin tất cả đơn hàng thành công!",
+            }); 
         } catch (error) {
             return res.status(500).json({
                 error: true,
