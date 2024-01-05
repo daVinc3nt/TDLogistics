@@ -8,10 +8,11 @@ const getAllOrders = async () => {
     return await Orders.getAllOrders();
 };
 
-const cancelOrder=async (values, permission)=>
+const cancelOrder=async (values)=>
 {
-    await Orders.cancelOrder(values, permission);
+  return await Orders.cancelOrder(values);
 };
+
 
 
 
