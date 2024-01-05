@@ -33,7 +33,7 @@ const createNewOrder = async (fields, values) => {
 
 const cancelOrder=async(values)=>{
     
- return await utils.cancelOne(pool, orderTable, ["order_id"], values);
+ return await utils.cancelOne(pool, table , ["order_id"], values);
     
 };
 
