@@ -112,15 +112,9 @@ const cancelOrder = async (req, res) =>
   let values;
   if (req.user.permission === 1) {
     // user
-     values=[req.user.user_id , req.body.order_id];
+     values = [req.user.user_id , req.body.order_id , 0];
   } 
   
-  else if (req.user.permission === 2)
-   {
-    // admin
-     values=[req.body.order_id];
-  } 
-
   else 
   {
     return res.status(401).json({
@@ -132,7 +126,7 @@ const cancelOrder = async (req, res) =>
 
   try {
     
-  const checkCancelOder = await ordersService.cancelOrder(values , req.user.permission);
+  const checkCancelOder = await ordersService.cancelOrder(values);
   if (checkCancelOder > 0)
   {
     res.status(200).json({
@@ -156,8 +150,6 @@ const cancelOrder = async (req, res) =>
     });
   }
 };
-
-
 
 module.exports = {
     checkExistOrder,
