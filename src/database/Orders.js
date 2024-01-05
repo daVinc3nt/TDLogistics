@@ -28,21 +28,14 @@ const getOrder = async (fields, values) => {
     return await utils.find(pool, table, fields, values);
 };
 
-const cancelOrder=async(values, permission)=>{
-  if (permission===1)
-  {
+const cancelOrder=async(values)=>{
       const currentTime=new Date();
       currentTime.setMinutes(currentTime.getMinutes()-30);
       const formattedTime = currentTime.toISOString().slice(0, 19).replace('T', ' ');
+      const timeCondition = `order_time < = ${formattedTime}`; 
 
-     return await utils.cancelOne(pool, orderTable, ["user_id","order_id"], values, formattedTime);
-  }
-  else
-  {
-     return await utils.cancelOne(pool, orderTable, ["order_id"], values);
-  }
+     return await utils.cancelOne(pool, orderTable, ["user_id","order_id"], values, timeCondition);
 };
-
 
 
 
