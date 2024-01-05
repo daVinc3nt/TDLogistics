@@ -17,7 +17,19 @@ const find = async (pool, table, fields = null, values = null) => {
     let query;
 
     if (fields !== null && values !== null) {
-        const whereClause =  fields.map(field => `${field} = ? `).join(' AND ');
+        // const whereClause =  fields.map(field => `${field} = ? `).join(' AND ');
+        // query = `SELECT * FROM ${table} WHERE ${whereClause}`;
+        const whereClauses = fields.map(field => {
+            if (field === 'start_order_time') {
+                return 'order_time >= ?';
+            } else if (field === 'end_order_time') {
+                return 'order_time <= ?';
+            } else {
+                return `${field} = ?`;
+            }
+        });
+    
+        const whereClause = whereClauses.join(' AND ');
         query = `SELECT * FROM ${table} WHERE ${whereClause}`;
     }
     else {
@@ -32,6 +44,10 @@ const find = async (pool, table, fields = null, values = null) => {
         console.log("Error: ", error);
         throw "Đã xảy ra lỗi. Vui lòng thử lại sau ít phút!";
     }
+}
+
+const fidBetween = async (fields, startValue, endValue) => {
+
 }
 
 const insert = async (pool, table, fields, values) => {
