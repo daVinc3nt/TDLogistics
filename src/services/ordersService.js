@@ -16,9 +16,15 @@ const createNewOrder = async (fields, values) => {
     return await Orders.createNewOrder(fields, values);
 }
 
+const cancel= async (values)=>
+{
+  return  await Orders.cancelOrderAdmin(values);
+};
+
 module.exports = {
     checkExistOrder,
     getAllOrders,
     getOrder,
     createNewOrder,
+    cancel
 };
