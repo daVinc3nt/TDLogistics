@@ -77,14 +77,13 @@ const getLastRow = async (pool, table) => {
     }
 }
 
-const cancelOne = async (pool, table, fields, values, currentTime = null) =>
+const cancelOne = async (pool, table, fields, values, conditions = null) =>
 {
     let query;
     const fieldCondition =  fields.map(field => `${field} = ? `).join(' AND ');
-    if (currentTime !== null) 
+    if (conditions !== null) 
     {
-        const timeCondition = `order_time < = ${currentTime}`; 
-        query = `DELETE FROM ${table} WHERE ${fieldCondition} AND ${timeCondition}  LIMIT 1`;
+        query = `DELETE FROM ${table} WHERE ${fieldCondition} AND ${conditions}  LIMIT 1`;
     }
     else
     {
