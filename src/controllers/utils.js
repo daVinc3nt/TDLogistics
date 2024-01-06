@@ -85,6 +85,15 @@ class CustomerUserRequestValidation {
     
         return schema.validate(this._data);
     }
+validateBreakShipment = () => {
+            const schema = Joi.object({
+                shipment_id: Joi.string().alphanum().min(5).max(15).required()
+            });
+        
+
+          return schema.validate(this._data);
+      }
+    
 }
 
 module.exports = {
